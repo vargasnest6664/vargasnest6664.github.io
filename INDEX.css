@@ -1,0 +1,81 @@
+
+H1{ COLOR:RED;
+    font-size:36PX; text-align:center ;}
+
+body{background-color: #f0f0f0;
+     font-family: Arial, Helvetica, sans-serif;
+     color:#333333;
+     margin:0;
+     padding:20px;
+}
+    
+body {
+    border: 5px solid red;  /* Borde rojo para ver dónde termina el body */
+    outline: 2px solid blue; /* Línea azul para ver el límite */
+}
+
+/* Menú principal */
+.menu-principal {
+    background-color: #333;
+    font-family: Arial, sans-serif;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.menu > li {
+    position: relative;  /* Necesario para el submenú */
+}
+
+.menu > li > a {
+    display: block;
+    padding: 15px 20px;
+    color: white;
+    text-decoration: none;
+}
+
+.menu > li > a:hover {
+    background-color: #555;
+}
+
+/* Submenú - oculto por defecto */
+.submenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #444;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    min-width: 200px;
+    display: none;  /* Oculta el submenú */
+}
+
+/* Mostrar submenú al pasar el mouse */
+.menu > li:hover .submenu {
+    display: block;  /* Muestra el submenú */
+}
+
+/* Estilo de los items del submenú */
+.submenu li a {
+    display: block;
+    padding: 10px 15px;
+    color: white;
+    text-decoration: none;
+    border-bottom: 1px solid #555;
+}
+
+.submenu li a:hover {
+    background-color: #666;
+}
+
+/* Opcional: quitar borde inferior al último */
+.submenu li:last-child a {
+    border-bottom: none;
+}
