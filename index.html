@@ -82,6 +82,107 @@
             background: #c53030;
         }
 
+        /* ============================================
+           MODAL DE CONTRASEÑA
+           ============================================ */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.visible {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .modal-content h2 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .modal-content p {
+            color: #718096;
+            margin-bottom: 20px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            text-align: center;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        .modal-content input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-content .btn-modal {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn-aceptar {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-aceptar:hover {
+            background: #38a169;
+        }
+
+        .btn-cancelar {
+            background: #a0aec0;
+            color: white;
+        }
+
+        .btn-cancelar:hover {
+            background: #718096;
+        }
+
+        .modal-content .error-msg {
+            color: #e53e3e;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .modal-content .error-msg.visible {
+            display: block;
+        }
+
+        /* ============================================
+           TARJETAS DE PROFESORES
+           ============================================ */
         .professors-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -148,6 +249,9 @@
             background: #5a67d8;
         }
 
+        /* ============================================
+           RESULTADOS
+           ============================================ */
         .resultados {
             text-align: center;
             padding: 20px;
@@ -177,11 +281,26 @@
             font-size: 1.2rem;
         }
 
+        .fecha-limite {
+            text-align: center;
+            color: #a0aec0;
+            font-size: 0.9rem;
+            margin-top: 30px;
+            padding: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        /* ============================================
+           ANIMACIONES
+           ============================================ */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
         @media (max-width: 768px) {
             .professors-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -192,6 +311,9 @@
             }
             .btn {
                 width: 80%;
+            }
+            .modal-content {
+                padding: 25px;
             }
         }
 
@@ -223,15 +345,37 @@
         <h1>🏆 Vota por el Profesor del Año 2026</h1>
         <p class="subtitle">Elige a tu profesor favorito</p>
         
+        <!-- ============================================
+             BOTONES DE CONTROL
+             ============================================ -->
         <div class="controls">
-            <button class="btn btn-resultados" id="btnResultados" onclick="mostrarResultados()">
+            <button class="btn btn-resultados" onclick="pedirContraseña('resultados')">
                 📊 Ver Resultados
             </button>
-            <button class="btn btn-reiniciar" onclick="reiniciarVotos()">
+            <button class="btn btn-reiniciar" onclick="pedirContraseña('reiniciar')">
                 🔄 Reiniciar Votación
             </button>
         </div>
 
+        <!-- ============================================
+             MODAL DE CONTRASEÑA
+             ============================================ -->
+        <div class="modal" id="modalPassword">
+            <div class="modal-content">
+                <h2>🔐 Acceso Restringido</h2>
+                <p>Ingresa la contraseña para continuar</p>
+                <input type="password" id="inputPassword" placeholder="Contraseña" maxlength="20">
+                <div>
+                    <button class="btn-modal btn-aceptar" onclick="verificarContraseña()">✅ Aceptar</button>
+                    <button class="btn-modal btn-cancelar" onclick="cerrarModal()">❌ Cancelar</button>
+                </div>
+                <div class="error-msg" id="errorPassword">❌ Contraseña incorrecta. Intenta de nuevo.</div>
+            </div>
+        </div>
+
+        <!-- ============================================
+             RESULTADOS
+             ============================================ -->
         <div class="resultados" id="resultadosDiv">
             <h2>📊 Resultados de la Votación</h2>
             <p class="ganador" id="ganadorNombre">🏆</p>
@@ -241,22 +385,33 @@
             </button>
         </div>
 
+        <!-- ============================================
+             PROFESORES
+             ============================================ -->
         <div class="professors-grid" id="professorsGrid">
             <!-- Los profesores se cargarán aquí -->
         </div>
 
         <div class="loading" id="loading">Cargando...</div>
         <div class="error" id="error" style="display:none;">Error al cargar los datos</div>
+
+        <div class="fecha-limite">
+            * Recuerde que los votos son válidos hasta el día 31 de diciembre de 2025. 
+            Los votos no se validan después de ese momento.
+        </div>
     </div>
 
     <script>
         // ============================================
-        // CONFIGURACIÓN DE PROFESORES
+        // CONFIGURACIÓN
         // ============================================
+        const CONTRASENA = 'zx2026';  // ← ¡Cambia esto por la contraseña que quieras!
+        let accionPendiente = '';     // 'resultados' o 'reiniciar'
+
         const profesores = [
             { 
                 nombre: 'FRANCIS', 
-                imagen: 'imagenes/ercy.jpeg'  // ✅ Ruta correcta para GitHub
+                imagen: 'imagenes/ercy.jpeg'
             },
             { 
                 nombre: 'MARGARITA', 
@@ -323,6 +478,55 @@
             }
             
             alert(`✅ ¡Votaste por ${nombreProfesor}!`);
+        }
+
+        // ============================================
+        // PEDIR CONTRASEÑA
+        // ============================================
+        function pedirContraseña(accion) {
+            accionPendiente = accion;
+            document.getElementById('modalPassword').classList.add('visible');
+            document.getElementById('inputPassword').value = '';
+            document.getElementById('errorPassword').classList.remove('visible');
+            document.getElementById('inputPassword').focus();
+        }
+
+        // ============================================
+        // VERIFICAR CONTRASEÑA
+        // ============================================
+        function verificarContraseña() {
+            const input = document.getElementById('inputPassword');
+            const errorMsg = document.getElementById('errorPassword');
+            
+            if (input.value === CONTRASENA) {
+                // Contraseña correcta
+                cerrarModal();
+                
+                if (accionPendiente === 'resultados') {
+                    mostrarResultados();
+                } else if (accionPendiente === 'reiniciar') {
+                    reiniciarVotos();
+                }
+                accionPendiente = '';
+            } else {
+                // Contraseña incorrecta
+                errorMsg.classList.add('visible');
+                input.value = '';
+                input.focus();
+                setTimeout(() => {
+                    errorMsg.classList.remove('visible');
+                }, 3000);
+            }
+        }
+
+        // ============================================
+        // CERRAR MODAL
+        // ============================================
+        function cerrarModal() {
+            document.getElementById('modalPassword').classList.remove('visible');
+            document.getElementById('inputPassword').value = '';
+            document.getElementById('errorPassword').classList.remove('visible');
+            accionPendiente = '';
         }
 
         // ============================================
@@ -409,22 +613,21 @@
         }
 
         // ============================================
-        // REINICIAR VOTOS
+        // REINICIAR VOTOS (con contraseña)
         // ============================================
         function reiniciarVotos() {
-            if (confirm('⚠️ ¿Estás seguro de reiniciar TODOS los votos a cero?')) {
-                profesores.forEach(prof => {
-                    votos[prof.nombre] = 0;
-                });
-                guardarVotos();
-                actualizarContadores();
-                
-                if (resultadosVisibles) {
-                    ocultarResultados();
-                }
-                
-                alert('✅ ¡Votos reiniciados correctamente!');
+            // Ya pasó la verificación de contraseña
+            profesores.forEach(prof => {
+                votos[prof.nombre] = 0;
+            });
+            guardarVotos();
+            actualizarContadores();
+            
+            if (resultadosVisibles) {
+                ocultarResultados();
             }
+            
+            alert('✅ ¡Votos reiniciados correctamente!');
         }
 
         // ============================================
@@ -462,7 +665,7 @@
         }
 
         // ============================================
-        // INICIALIZAR
+        // PERMITIR ENTER EN EL INPUT DE CONTRASEÑA
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
             cargarVotosGuardados();
@@ -470,8 +673,14 @@
             actualizarContadores();
             mostrarVotosEnTarjetas(false);
             
+            // Enter en el campo de contraseña
+            document.getElementById('inputPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    verificarContraseña();
+                }
+            });
+            
             console.log('✅ Página cargada - Votos ocultos hasta presionar "Ver Resultados"');
-            console.log('📁 Fotos cargadas desde:', profesores[0].imagen);
         });
     </script>
 </body>
