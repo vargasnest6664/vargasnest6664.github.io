@@ -290,17 +290,11 @@
             border-top: 1px solid #e2e8f0;
         }
 
-        /* ============================================
-           ANIMACIONES
-           ============================================ */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ============================================
-           RESPONSIVE
-           ============================================ */
         @media (max-width: 768px) {
             .professors-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -345,9 +339,6 @@
         <h1>🏆 Vota por el Profesor del Año 2026</h1>
         <p class="subtitle">Elige a tu profesor favorito</p>
 
-        <!-- ============================================
-             BOTONES DE CONTROL
-             ============================================ -->
         <div class="controls">
             <button class="btn btn-resultados" onclick="pedirContraseña('resultados')">
                 📊 Ver Resultados
@@ -357,9 +348,7 @@
             </button>
         </div>
 
-        <!-- ============================================
-             MODAL DE CONTRASEÑA
-             ============================================ -->
+        <!-- MODAL DE CONTRASEÑA -->
         <div class="modal" id="modalPassword">
             <div class="modal-content">
                 <h2>🔐 Acceso Restringido</h2>
@@ -373,9 +362,7 @@
             </div>
         </div>
 
-        <!-- ============================================
-             RESULTADOS
-             ============================================ -->
+        <!-- RESULTADOS -->
         <div class="resultados" id="resultadosDiv">
             <h2>📊 Resultados de la Votación</h2>
             <p class="ganador" id="ganadorNombre">🏆</p>
@@ -385,13 +372,8 @@
             </button>
         </div>
 
-        <!-- ============================================
-             PROFESORES
-             ============================================ -->
-        <div class="professors-grid" id="professorsGrid">
-            <!-- Los profesores se cargarán aquí -->
-        </div>
-
+        <!-- PROFESORES -->
+        <div class="professors-grid" id="professorsGrid"></div>
         <div class="loading" id="loading">Cargando...</div>
         <div class="error" id="error" style="display:none;">Error al cargar los datos</div>
 
@@ -405,7 +387,7 @@
         // ============================================
         // 🔑 CONTRASEÑA (¡Cámbiala aquí!)
         // ============================================
-        const CONTRASENA = 'zx2026';  // ← Cambia por la contraseña que quieras
+        const CONTRASENA = 'zx2026';
 
         // ============================================
         // CONFIGURACIÓN DE PROFESORES
@@ -432,6 +414,7 @@
                 const votosGuardados = localStorage.getItem('votosProfesores');
                 if (votosGuardados) {
                     votos = JSON.parse(votosGuardados);
+                    console.log('📊 Votos cargados:', votos);
                 } else {
                     profesores.forEach(prof => { votos[prof.nombre] = 0; });
                 }
@@ -447,6 +430,7 @@
         function guardarVotos() {
             try {
                 localStorage.setItem('votosProfesores', JSON.stringify(votos));
+                console.log('💾 Votos guardados:', votos);
             } catch (error) {
                 console.error('Error al guardar votos:', error);
             }
@@ -476,6 +460,7 @@
             setTimeout(() => {
                 document.getElementById('inputPassword').focus();
             }, 100);
+            console.log('🔐 Solicitando contraseña para:', accion);
         }
 
         // ============================================
@@ -485,15 +470,24 @@
             const input = document.getElementById('inputPassword');
             const errorMsg = document.getElementById('errorPassword');
 
+            console.log('🔑 Verificando contraseña...');
+            console.log('📝 Ingresado:', input.value);
+            console.log('🔐 Esperado:', CONTRASENA);
+
             if (input.value === CONTRASENA) {
+                console.log('✅ Contraseña correcta');
                 cerrarModal();
+                
                 if (accionPendiente === 'resultados') {
+                    console.log('📊 Mostrando resultados...');
                     mostrarResultados();
                 } else if (accionPendiente === 'reiniciar') {
+                    console.log('🔄 Reiniciando votos...');
                     reiniciarVotos();
                 }
                 accionPendiente = '';
             } else {
+                console.log('❌ Contraseña incorrecta');
                 errorMsg.classList.add('visible');
                 input.value = '';
                 input.focus();
@@ -507,18 +501,23 @@
             document.getElementById('modalPassword').classList.remove('visible');
             document.getElementById('inputPassword').value = '';
             document.getElementById('errorPassword').classList.remove('visible');
-            accionPendiente = '';
+            console.log('🚪 Modal cerrado');
         }
 
         // ============================================
         // MOSTRAR RESULTADOS
         // ============================================
         function mostrarResultados() {
+            console.log('📊 Ejecutando mostrarResultados()');
+            
             const resultadosDiv = document.getElementById('resultadosDiv');
             const ganadorNombre = document.getElementById('ganadorNombre');
             const totalVotosResultados = document.getElementById('totalVotosResultados');
 
+            console.log('📊 Votos actuales:', votos);
+
             const total = Object.values(votos).reduce((sum, v) => sum + v, 0);
+            console.log('📊 Total de votos:', total);
 
             let ganador = '';
             let maxVotos = -1;
@@ -526,6 +525,7 @@
 
             profesores.forEach(prof => {
                 const v = votos[prof.nombre] || 0;
+                console.log(`📊 ${prof.nombre}: ${v} votos`);
                 if (v > maxVotos) {
                     maxVotos = v;
                     ganador = prof.nombre;
@@ -534,6 +534,9 @@
                     empate = true;
                 }
             });
+
+            console.log('🏆 Ganador:', ganador, 'con', maxVotos, 'votos');
+            console.log('🤝 Empate:', empate);
 
             if (total === 0) {
                 ganadorNombre.textContent = '⚠️ Aún no hay votos';
@@ -550,6 +553,8 @@
             resultadosDiv.classList.add('visible');
             resultadosVisibles = true;
             mostrarVotosEnTarjetas(true);
+            
+            console.log('✅ Resultados mostrados correctamente');
         }
 
         // ============================================
@@ -559,6 +564,7 @@
             document.getElementById('resultadosDiv').classList.remove('visible');
             resultadosVisibles = false;
             mostrarVotosEnTarjetas(false);
+            console.log('🔒 Resultados ocultados');
         }
 
         // ============================================
@@ -596,6 +602,7 @@
         // REINICIAR VOTOS
         // ============================================
         function reiniciarVotos() {
+            console.log('🔄 Reiniciando votos...');
             profesores.forEach(prof => {
                 votos[prof.nombre] = 0;
             });
@@ -605,6 +612,7 @@
                 ocultarResultados();
             }
             alert('✅ ¡Votos reiniciados correctamente!');
+            console.log('✅ Votos reiniciados:', votos);
         }
 
         // ============================================
@@ -639,12 +647,15 @@
 
                 grid.appendChild(card);
             });
+            
+            console.log('✅ Profesores mostrados');
         }
 
         // ============================================
-        // PERMITIR ENTER EN EL INPUT
+        // INICIALIZAR
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Iniciando página...');
             cargarVotosGuardados();
             mostrarProfesores();
             actualizarContadores();
