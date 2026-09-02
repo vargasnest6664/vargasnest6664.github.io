@@ -41,9 +41,6 @@
             margin-bottom: 30px;
         }
 
-        /* ============================================
-           BOTONES DE CONTROL
-           ============================================ */
         .controls {
             display: flex;
             justify-content: center;
@@ -76,11 +73,6 @@
             background: #38a169;
         }
 
-        .btn-resultados.oculto {
-            background: #a0aec0;
-            cursor: not-allowed;
-        }
-
         .btn-reiniciar {
             background: #e53e3e;
             color: white;
@@ -90,9 +82,6 @@
             background: #c53030;
         }
 
-        /* ============================================
-           TARJETAS DE PROFESORES
-           ============================================ */
         .professors-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -159,9 +148,6 @@
             background: #5a67d8;
         }
 
-        /* ============================================
-           RESULTADOS (Ganador)
-           ============================================ */
         .resultados {
             text-align: center;
             padding: 20px;
@@ -182,7 +168,6 @@
         }
 
         .resultados .ganador {
-            color: #48bb78;
             font-size: 2.5rem;
             font-weight: bold;
         }
@@ -192,17 +177,11 @@
             font-size: 1.2rem;
         }
 
-        /* ============================================
-           ANIMACIONES
-           ============================================ */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ============================================
-           RESPONSIVE
-           ============================================ */
         @media (max-width: 768px) {
             .professors-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -244,9 +223,6 @@
         <h1>🏆 Vota por el Profesor del Año 2026</h1>
         <p class="subtitle">Elige a tu profesor favorito</p>
         
-        <!-- ============================================
-             BOTONES DE CONTROL
-             ============================================ -->
         <div class="controls">
             <button class="btn btn-resultados" id="btnResultados" onclick="mostrarResultados()">
                 📊 Ver Resultados
@@ -256,9 +232,6 @@
             </button>
         </div>
 
-        <!-- ============================================
-             RESULTADOS
-             ============================================ -->
         <div class="resultados" id="resultadosDiv">
             <h2>📊 Resultados de la Votación</h2>
             <p class="ganador" id="ganadorNombre">🏆</p>
@@ -268,9 +241,6 @@
             </button>
         </div>
 
-        <!-- ============================================
-             PROFESORES
-             ============================================ -->
         <div class="professors-grid" id="professorsGrid">
             <!-- Los profesores se cargarán aquí -->
         </div>
@@ -286,7 +256,7 @@
         const profesores = [
             { 
                 nombre: 'FRANCIS', 
-                imagen: 'imagenes/ercy.jpeg'
+                imagen: 'imagenes/ercy.jpeg'  // ✅ Ruta correcta para GitHub
             },
             { 
                 nombre: 'MARGARITA', 
@@ -348,7 +318,6 @@
             guardarVotos();
             actualizarContadores();
             
-            // Si los resultados están visibles, actualizarlos
             if (resultadosVisibles) {
                 mostrarResultados();
             }
@@ -364,10 +333,8 @@
             const ganadorNombre = document.getElementById('ganadorNombre');
             const totalVotosResultados = document.getElementById('totalVotosResultados');
             
-            // Calcular total de votos
             const total = Object.values(votos).reduce((sum, v) => sum + v, 0);
             
-            // Encontrar al ganador
             let ganador = '';
             let maxVotos = -1;
             let empate = false;
@@ -383,7 +350,6 @@
                 }
             });
             
-            // Mostrar resultados
             if (total === 0) {
                 ganadorNombre.textContent = '⚠️ Aún no hay votos';
                 ganadorNombre.style.color = '#e53e3e';
@@ -398,8 +364,6 @@
             totalVotosResultados.textContent = total;
             resultadosDiv.classList.add('visible');
             resultadosVisibles = true;
-            
-            // Mostrar todos los votos en las tarjetas
             mostrarVotosEnTarjetas(true);
         }
 
@@ -455,7 +419,6 @@
                 guardarVotos();
                 actualizarContadores();
                 
-                // Ocultar resultados si están visibles
                 if (resultadosVisibles) {
                     ocultarResultados();
                 }
@@ -490,7 +453,7 @@
                         <span class="numero oculto" data-profesor="${profesor.nombre}">${votosActuales}</span>
                     </p>
                     <button class="vote-btn" onclick="votar('${profesor.nombre}')">
-                        Votar
+                        🗳️ Votar
                     </button>
                 `;
                 
@@ -505,57 +468,11 @@
             cargarVotosGuardados();
             mostrarProfesores();
             actualizarContadores();
-            
-            // Ocultar votos inicialmente
             mostrarVotosEnTarjetas(false);
             
             console.log('✅ Página cargada - Votos ocultos hasta presionar "Ver Resultados"');
+            console.log('📁 Fotos cargadas desde:', profesores[0].imagen);
         });
     </script>
-</body>
-</html>
-   <font color="FF0000" ><h1>Profesor Néstor Vargas</h1></font>
-     <br>
-     <br>
-    <img src="nestor.jpeg" alt="Foto del Profesor Néstor Vargas"
-     width="80" height="80">
-
-    
-    <p><strong>Área:</strong> Informática</p>
-    <p><strong>Edad:</strong> 42 años</p>
-    <p><strong>Asignatura:</strong> Diseño Web</p>
-    
-    <p>Bienvenidos a mi página personal. Soy profesor de Diseño Web
-       y me apasiona enseñar a crear sitios web funcionales y creativos.</p>
-
- <table border="3" bgcolor="#D98271">
-   <tr>
-     <th colspan="3" bgcolor="#1EF207">CLIENTES 2026</th>
-   </tr>
-    <tr>
-         <th> NOMBRE </th>
-         <th> APELLIDOS </th>
-         <th> EDAD </th>
-     </tr> 
-     <tr>
-         <td rowspan="2"> ANA </td>
-         <td> PEREZ </td>
-         <td> 18 </td>
-     </tr>
-    <tr>
-          <td> LOPEZ </td>
-          <td> 17 </td>
-    </tr>
-</TABLE>
-<a href="https://www.google.com">Ir a Google</a>
-<br>
-<a href="C:\html3\pagina2.html">ir a la pagina2 dentro del sitio </a>
-<div align="center">
-    <video width="800" height="450" controls poster="miniatura.jpg" style="border-radius: 15px;">
-        <source src="uno.mp4" type="video/mp4">
-        Tu navegador no soporta la etiqueta de video.
-    </video>
-</div>
-
 </body>
 </html>
