@@ -344,7 +344,7 @@
     <div class="container">
         <h1>🏆 Vota por el Profesor del Año 2026</h1>
         <p class="subtitle">Elige a tu profesor favorito</p>
-        
+
         <!-- ============================================
              BOTONES DE CONTROL
              ============================================ -->
@@ -403,28 +403,18 @@
 
     <script>
         // ============================================
-        // CONFIGURACIÓN
+        // 🔑 CONTRASEÑA (¡Cámbiala aquí!)
         // ============================================
-        const CONTRASENA = 'zx2026';  // ← ¡Cambia esto por la contraseña que quieras!
-        let accionPendiente = '';     // 'resultados' o 'reiniciar'
+        const CONTRASENA = 'zx2026';  // ← Cambia por la contraseña que quieras
 
+        // ============================================
+        // CONFIGURACIÓN DE PROFESORES
+        // ============================================
         const profesores = [
-            { 
-                nombre: 'FRANCIS', 
-                imagen: 'imagenes/ercy.jpeg'
-            },
-            { 
-                nombre: 'MARGARITA', 
-                imagen: 'imagenes/margarita.jpeg' 
-            },
-            { 
-                nombre: 'OSMAN', 
-                imagen: 'imagenes/osman.jpeg' 
-            },
-            { 
-                nombre: 'EDUARDO', 
-                imagen: 'imagenes/eduardo.jpeg' 
-            }
+            { nombre: 'FRANCIS', imagen: 'imagenes/ercy.jpeg' },
+            { nombre: 'MARGARITA', imagen: 'imagenes/margarita.jpeg' },
+            { nombre: 'OSMAN', imagen: 'imagenes/osman.jpeg' },
+            { nombre: 'EDUARDO', imagen: 'imagenes/eduardo.jpeg' }
         ];
 
         // ============================================
@@ -432,6 +422,7 @@
         // ============================================
         let votos = {};
         let resultadosVisibles = false;
+        let accionPendiente = '';
 
         // ============================================
         // CARGAR VOTOS GUARDADOS
@@ -442,15 +433,11 @@
                 if (votosGuardados) {
                     votos = JSON.parse(votosGuardados);
                 } else {
-                    profesores.forEach(prof => {
-                        votos[prof.nombre] = 0;
-                    });
+                    profesores.forEach(prof => { votos[prof.nombre] = 0; });
                 }
             } catch (error) {
                 console.error('Error al cargar votos:', error);
-                profesores.forEach(prof => {
-                    votos[prof.nombre] = 0;
-                });
+                profesores.forEach(prof => { votos[prof.nombre] = 0; });
             }
         }
 
@@ -472,11 +459,9 @@
             votos[nombreProfesor] = (votos[nombreProfesor] || 0) + 1;
             guardarVotos();
             actualizarContadores();
-            
             if (resultadosVisibles) {
                 mostrarResultados();
             }
-            
             alert(`✅ ¡Votaste por ${nombreProfesor}!`);
         }
 
@@ -488,7 +473,9 @@
             document.getElementById('modalPassword').classList.add('visible');
             document.getElementById('inputPassword').value = '';
             document.getElementById('errorPassword').classList.remove('visible');
-            document.getElementById('inputPassword').focus();
+            setTimeout(() => {
+                document.getElementById('inputPassword').focus();
+            }, 100);
         }
 
         // ============================================
@@ -497,11 +484,9 @@
         function verificarContraseña() {
             const input = document.getElementById('inputPassword');
             const errorMsg = document.getElementById('errorPassword');
-            
+
             if (input.value === CONTRASENA) {
-                // Contraseña correcta
                 cerrarModal();
-                
                 if (accionPendiente === 'resultados') {
                     mostrarResultados();
                 } else if (accionPendiente === 'reiniciar') {
@@ -509,13 +494,9 @@
                 }
                 accionPendiente = '';
             } else {
-                // Contraseña incorrecta
                 errorMsg.classList.add('visible');
                 input.value = '';
                 input.focus();
-                setTimeout(() => {
-                    errorMsg.classList.remove('visible');
-                }, 3000);
             }
         }
 
@@ -536,13 +517,13 @@
             const resultadosDiv = document.getElementById('resultadosDiv');
             const ganadorNombre = document.getElementById('ganadorNombre');
             const totalVotosResultados = document.getElementById('totalVotosResultados');
-            
+
             const total = Object.values(votos).reduce((sum, v) => sum + v, 0);
-            
+
             let ganador = '';
             let maxVotos = -1;
             let empate = false;
-            
+
             profesores.forEach(prof => {
                 const v = votos[prof.nombre] || 0;
                 if (v > maxVotos) {
@@ -553,7 +534,7 @@
                     empate = true;
                 }
             });
-            
+
             if (total === 0) {
                 ganadorNombre.textContent = '⚠️ Aún no hay votos';
                 ganadorNombre.style.color = '#e53e3e';
@@ -564,7 +545,7 @@
                 ganadorNombre.textContent = `🏆 ${ganador} (${maxVotos} votos)`;
                 ganadorNombre.style.color = '#48bb78';
             }
-            
+
             totalVotosResultados.textContent = total;
             resultadosDiv.classList.add('visible');
             resultadosVisibles = true;
@@ -587,7 +568,6 @@
             profesores.forEach(profesor => {
                 const votosElement = document.querySelector(`[data-profesor="${profesor.nombre}"]`);
                 const textoOculto = document.querySelector(`[data-oculto="${profesor.nombre}"]`);
-                
                 if (votosElement) {
                     if (visible) {
                         votosElement.classList.remove('oculto');
@@ -613,20 +593,17 @@
         }
 
         // ============================================
-        // REINICIAR VOTOS (con contraseña)
+        // REINICIAR VOTOS
         // ============================================
         function reiniciarVotos() {
-            // Ya pasó la verificación de contraseña
             profesores.forEach(prof => {
                 votos[prof.nombre] = 0;
             });
             guardarVotos();
             actualizarContadores();
-            
             if (resultadosVisibles) {
                 ocultarResultados();
             }
-            
             alert('✅ ¡Votos reiniciados correctamente!');
         }
 
@@ -636,16 +613,16 @@
         function mostrarProfesores() {
             const grid = document.getElementById('professorsGrid');
             const loading = document.getElementById('loading');
-            
+
             loading.style.display = 'none';
             grid.innerHTML = '';
 
             profesores.forEach(profesor => {
                 const votosActuales = votos[profesor.nombre] || 0;
-                
+
                 const card = document.createElement('div');
                 card.className = 'professor-card';
-                
+
                 card.innerHTML = `
                     <img src="${profesor.imagen}" 
                          alt="${profesor.nombre}"
@@ -659,28 +636,27 @@
                         🗳️ Votar
                     </button>
                 `;
-                
+
                 grid.appendChild(card);
             });
         }
 
         // ============================================
-        // PERMITIR ENTER EN EL INPUT DE CONTRASEÑA
+        // PERMITIR ENTER EN EL INPUT
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
             cargarVotosGuardados();
             mostrarProfesores();
             actualizarContadores();
             mostrarVotosEnTarjetas(false);
-            
-            // Enter en el campo de contraseña
+
             document.getElementById('inputPassword').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     verificarContraseña();
                 }
             });
-            
-            console.log('✅ Página cargada - Votos ocultos hasta presionar "Ver Resultados"');
+
+            console.log('✅ Página cargada correctamente');
         });
     </script>
 </body>
