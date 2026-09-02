@@ -3,61 +3,517 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profesor Néstor Vargas - Diseño Web</title>   
-    <link rel="stylesheet" href="INDEX.css">
+    <title>Vota por el Profesor del Año</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        /* ============================================
+           BOTONES DE CONTROL
+           ============================================ */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-resultados {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-resultados:hover {
+            background: #38a169;
+        }
+
+        .btn-resultados.oculto {
+            background: #a0aec0;
+            cursor: not-allowed;
+        }
+
+        .btn-reiniciar {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-reiniciar:hover {
+            background: #c53030;
+        }
+
+        /* ============================================
+           TARJETAS DE PROFESORES
+           ============================================ */
+        .professors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 20px;
+        }
+
+        .professor-card {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .professor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .professor-card img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #667eea;
+            margin-bottom: 15px;
+        }
+
+        .professor-card h3 {
+            color: #2d3748;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .professor-card .votes {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            min-height: 30px;
+        }
+
+        .professor-card .votes .numero {
+            font-size: 1.5rem;
+            color: #2d3748;
+        }
+
+        .professor-card .votes .oculto {
+            display: none;
+        }
+
+        .vote-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .vote-btn:hover {
+            background: #5a67d8;
+        }
+
+        /* ============================================
+           RESULTADOS (Ganador)
+           ============================================ */
+        .resultados {
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 15px;
+            background: #edf2f7;
+            display: none;
+        }
+
+        .resultados.visible {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .resultados h2 {
+            color: #2d3748;
+            font-size: 2rem;
+        }
+
+        .resultados .ganador {
+            color: #48bb78;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .resultados .total {
+            color: #718096;
+            font-size: 1.2rem;
+        }
+
+        /* ============================================
+           ANIMACIONES
+           ============================================ */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 768px) {
+            .professors-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 80%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .professors-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            color: #718096;
+            font-size: 1.2rem;
+            padding: 20px;
+        }
+
+        .error {
+            text-align: center;
+            color: #e53e3e;
+            font-size: 1.2rem;
+            padding: 20px;
+            background: #fed7d7;
+            border-radius: 10px;
+        }
+    </style>
 </head>
-<body Bgcolor="9EEE2F">
-<h1> PAGINA PERSONAL Y PERFIL PROFESIONAL
-</h1>
+<body>
+    <div class="container">
+        <h1>🏆 Vota por el Profesor del Año 2026</h1>
+        <p class="subtitle">Elige a tu profesor favorito</p>
+        
+        <!-- ============================================
+             BOTONES DE CONTROL
+             ============================================ -->
+        <div class="controls">
+            <button class="btn btn-resultados" id="btnResultados" onclick="mostrarResultados()">
+                📊 Ver Resultados
+            </button>
+            <button class="btn btn-reiniciar" onclick="reiniciarVotos()">
+                🔄 Reiniciar Votación
+            </button>
+        </div>
 
-<marquee Bgcolor="00BFFF" behavior="alternate" scrollamount="10" 
-  loop ="infinite" width="100%" height="90">
-       <h1>
-            <font color="#FF0000">P</font>
-            <font color="#FF7F00">Á</font>
-            <font color="#FFFF00">G</font>
-            <font color="#00FF00">I</font>
-            <font color="#0000FF">N</font>
-            <font color="#4B0082">A</font>
-            <font color="#9400D3"> </font>
-            <font color="#FF1493">D</font>
-            <font color="#00FFFF">E</font>
-            <font color="#FF4500"> </font>
-            <font color="#FFD700">P</font>
-            <font color="#ADFF2F">R</font>
-            <font color="#1E90FF">E</font>
-            <font color="#FF69B4">S</font>
-            <font color="#32CD32">E</font>
-            <font color="#FF8C00">N</font>
-            <font color="#9370DB">T</font>
-            <font color="#FF6347">A</font>
-            <font color="#40E0D0">C</font>
-            <font color="#EE82EE">I</font>
-            <font color="#F0E68C">Ó</font>
-            <font color="#98FB98">N</font>
-            <font color="#FFB6C1">!</font>
-      </h1>
-</marquee>
- <font face="Arial" size="4">
-   <hr noshade size="5" color="#333">
-    <p align="center">
-     
-    </p>
-  </font>
-<nav class="menu-principal">
-    <ul class="menu">
-        <li><a href="Index.html">IR AL INICIO</a></li>
-        <li>
-            <a href="#">SERVICIOS</a>
-            <ul class="submenu">
-                <li><a href="nosotros.html">DESARROLLO WEB</a></li>
-                <li><a href="galeria.html">CONSULTORIA TECNICA</a></li>
-            </ul>
-        </li>
-        <li><a href="productos.html">PORTAFOLIO</a></li>
-    </ul>
-</nav>
+        <!-- ============================================
+             RESULTADOS
+             ============================================ -->
+        <div class="resultados" id="resultadosDiv">
+            <h2>📊 Resultados de la Votación</h2>
+            <p class="ganador" id="ganadorNombre">🏆</p>
+            <p class="total">Total de votos: <strong id="totalVotosResultados">0</strong></p>
+            <button class="btn" style="background:#667eea;color:white;margin-top:15px;" onclick="ocultarResultados()">
+                ✖ Cerrar Resultados
+            </button>
+        </div>
 
+        <!-- ============================================
+             PROFESORES
+             ============================================ -->
+        <div class="professors-grid" id="professorsGrid">
+            <!-- Los profesores se cargarán aquí -->
+        </div>
+
+        <div class="loading" id="loading">Cargando...</div>
+        <div class="error" id="error" style="display:none;">Error al cargar los datos</div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURACIÓN DE PROFESORES
+        // ============================================
+        const profesores = [
+            { 
+                nombre: 'FRANCIS', 
+                imagen: 'imagenes/ercy.jpeg'
+            },
+            { 
+                nombre: 'MARGARITA', 
+                imagen: 'imagenes/margarita.jpeg' 
+            },
+            { 
+                nombre: 'OSMAN', 
+                imagen: 'imagenes/osman.jpeg' 
+            },
+            { 
+                nombre: 'EDUARDO', 
+                imagen: 'imagenes/eduardo.jpeg' 
+            }
+        ];
+
+        // ============================================
+        // VARIABLES GLOBALES
+        // ============================================
+        let votos = {};
+        let resultadosVisibles = false;
+
+        // ============================================
+        // CARGAR VOTOS GUARDADOS
+        // ============================================
+        function cargarVotosGuardados() {
+            try {
+                const votosGuardados = localStorage.getItem('votosProfesores');
+                if (votosGuardados) {
+                    votos = JSON.parse(votosGuardados);
+                } else {
+                    profesores.forEach(prof => {
+                        votos[prof.nombre] = 0;
+                    });
+                }
+            } catch (error) {
+                console.error('Error al cargar votos:', error);
+                profesores.forEach(prof => {
+                    votos[prof.nombre] = 0;
+                });
+            }
+        }
+
+        // ============================================
+        // GUARDAR VOTOS
+        // ============================================
+        function guardarVotos() {
+            try {
+                localStorage.setItem('votosProfesores', JSON.stringify(votos));
+            } catch (error) {
+                console.error('Error al guardar votos:', error);
+            }
+        }
+
+        // ============================================
+        // VOTAR
+        // ============================================
+        function votar(nombreProfesor) {
+            votos[nombreProfesor] = (votos[nombreProfesor] || 0) + 1;
+            guardarVotos();
+            actualizarContadores();
+            
+            // Si los resultados están visibles, actualizarlos
+            if (resultadosVisibles) {
+                mostrarResultados();
+            }
+            
+            alert(`✅ ¡Votaste por ${nombreProfesor}!`);
+        }
+
+        // ============================================
+        // MOSTRAR RESULTADOS
+        // ============================================
+        function mostrarResultados() {
+            const resultadosDiv = document.getElementById('resultadosDiv');
+            const ganadorNombre = document.getElementById('ganadorNombre');
+            const totalVotosResultados = document.getElementById('totalVotosResultados');
+            
+            // Calcular total de votos
+            const total = Object.values(votos).reduce((sum, v) => sum + v, 0);
+            
+            // Encontrar al ganador
+            let ganador = '';
+            let maxVotos = -1;
+            let empate = false;
+            
+            profesores.forEach(prof => {
+                const v = votos[prof.nombre] || 0;
+                if (v > maxVotos) {
+                    maxVotos = v;
+                    ganador = prof.nombre;
+                    empate = false;
+                } else if (v === maxVotos && maxVotos > 0) {
+                    empate = true;
+                }
+            });
+            
+            // Mostrar resultados
+            if (total === 0) {
+                ganadorNombre.textContent = '⚠️ Aún no hay votos';
+                ganadorNombre.style.color = '#e53e3e';
+            } else if (empate) {
+                ganadorNombre.textContent = '🤝 ¡EMPATE!';
+                ganadorNombre.style.color = '#ed8936';
+            } else {
+                ganadorNombre.textContent = `🏆 ${ganador} (${maxVotos} votos)`;
+                ganadorNombre.style.color = '#48bb78';
+            }
+            
+            totalVotosResultados.textContent = total;
+            resultadosDiv.classList.add('visible');
+            resultadosVisibles = true;
+            
+            // Mostrar todos los votos en las tarjetas
+            mostrarVotosEnTarjetas(true);
+        }
+
+        // ============================================
+        // OCULTAR RESULTADOS
+        // ============================================
+        function ocultarResultados() {
+            document.getElementById('resultadosDiv').classList.remove('visible');
+            resultadosVisibles = false;
+            mostrarVotosEnTarjetas(false);
+        }
+
+        // ============================================
+        // MOSTRAR/OCULTAR VOTOS EN TARJETAS
+        // ============================================
+        function mostrarVotosEnTarjetas(visible) {
+            profesores.forEach(profesor => {
+                const votosElement = document.querySelector(`[data-profesor="${profesor.nombre}"]`);
+                const textoOculto = document.querySelector(`[data-oculto="${profesor.nombre}"]`);
+                
+                if (votosElement) {
+                    if (visible) {
+                        votosElement.classList.remove('oculto');
+                        if (textoOculto) textoOculto.style.display = 'none';
+                    } else {
+                        votosElement.classList.add('oculto');
+                        if (textoOculto) textoOculto.style.display = 'inline';
+                    }
+                }
+            });
+        }
+
+        // ============================================
+        // ACTUALIZAR CONTADORES
+        // ============================================
+        function actualizarContadores() {
+            profesores.forEach(profesor => {
+                const votosElement = document.querySelector(`[data-profesor="${profesor.nombre}"]`);
+                if (votosElement) {
+                    votosElement.textContent = votos[profesor.nombre] || 0;
+                }
+            });
+        }
+
+        // ============================================
+        // REINICIAR VOTOS
+        // ============================================
+        function reiniciarVotos() {
+            if (confirm('⚠️ ¿Estás seguro de reiniciar TODOS los votos a cero?')) {
+                profesores.forEach(prof => {
+                    votos[prof.nombre] = 0;
+                });
+                guardarVotos();
+                actualizarContadores();
+                
+                // Ocultar resultados si están visibles
+                if (resultadosVisibles) {
+                    ocultarResultados();
+                }
+                
+                alert('✅ ¡Votos reiniciados correctamente!');
+            }
+        }
+
+        // ============================================
+        // MOSTRAR PROFESORES
+        // ============================================
+        function mostrarProfesores() {
+            const grid = document.getElementById('professorsGrid');
+            const loading = document.getElementById('loading');
+            
+            loading.style.display = 'none';
+            grid.innerHTML = '';
+
+            profesores.forEach(profesor => {
+                const votosActuales = votos[profesor.nombre] || 0;
+                
+                const card = document.createElement('div');
+                card.className = 'professor-card';
+                
+                card.innerHTML = `
+                    <img src="${profesor.imagen}" 
+                         alt="${profesor.nombre}"
+                         onerror="this.src='https://ui-avatars.com/api/?name=${profesor.nombre}&background=667eea&color=fff&size=150'">
+                    <h3>${profesor.nombre}</h3>
+                    <p class="votes">
+                        <span data-oculto="${profesor.nombre}">🔒 Votos: <strong>???</strong></span>
+                        <span class="numero oculto" data-profesor="${profesor.nombre}">${votosActuales}</span>
+                    </p>
+                    <button class="vote-btn" onclick="votar('${profesor.nombre}')">
+                        Votar
+                    </button>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // ============================================
+        // INICIALIZAR
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarVotosGuardados();
+            mostrarProfesores();
+            actualizarContadores();
+            
+            // Ocultar votos inicialmente
+            mostrarVotosEnTarjetas(false);
+            
+            console.log('✅ Página cargada - Votos ocultos hasta presionar "Ver Resultados"');
+        });
+    </script>
+</body>
+</html>
    <font color="FF0000" ><h1>Profesor Néstor Vargas</h1></font>
      <br>
      <br>
